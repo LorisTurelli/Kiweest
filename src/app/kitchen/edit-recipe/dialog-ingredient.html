@@ -1,0 +1,27 @@
+<mat-dialog-content>
+  <form action="">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Nuovo Ingrediente</mat-label>
+        <input matInput required type="text" [(ngModel)]="data.name" name="name" id="name"/>
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="outline">
+        <mat-label>Qnt</mat-label>
+        <input matInput required type="number" [(ngModel)]="data.amount" name="amount" id="amount" [disabled]="checkUnit()"/>
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>Unità</mat-label>
+        <mat-select required [(ngModel)]="data.unit" name="unit" id="unit" (selectionChange)="checkUnit()">
+          <mat-option value="pz">pz</mat-option>
+          <mat-option value="gr">gr</mat-option>
+          <mat-option value="ml">ml</mat-option>
+          <mat-option value="q.b.">q.b.</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <button mat-raised-button class="mb-3 w-100" color="accent" [mat-dialog-close]="data">Aggiungi Ingrediente</button>
+    <button mat-button class="mb-3 w-100" (click)="onNoClick()">Annulla</button>
+  </form>
+</mat-dialog-content>

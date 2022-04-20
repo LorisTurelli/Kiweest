@@ -1,0 +1,98 @@
+<div class="container">
+  <form [formGroup]="weekForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Data di Inizio</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        formControlName="start"
+        placeholder="Inizio"
+        (dateChange)="setDate()"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Durata</mat-label>
+      <input
+        matInput
+        type="number"
+        min="1"
+        formControlName="duration"
+        placeholder="Durata"
+        (change)="setDuration()"
+      />
+    </mat-form-field>
+  </form>
+
+  <section>
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      class="mat-elevation-z8 w-100 text-start"
+    >
+      <ng-container matColumnDef="date" class="w-25">
+        <th mat-header-cell *matHeaderCellDef>Data</th>
+        <td mat-cell *matCellDef="let day">{{ day.date | date: "E d MMM" }}</td>
+      </ng-container>
+      <ng-container matColumnDef="lunch">
+        <th mat-header-cell *matHeaderCellDef>Pranzo</th>
+        <td mat-cell *matCellDef="let day">
+          <div
+            cdkDropList
+            [cdkDropListData]="day.lunch"
+            [cdkDropListConnectedTo]="dropTargetIds"
+            class="example-list"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <mat-chip-list class="mat-chip-list-stacked" >
+              <mat-chip *ngFor="let recipe of day.lunch" cdkDrag>
+                {{ recipe.name }}
+                <button matChipRemove (click)="removeRecipe(day.date, recipe.name, 'lunch')">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="selectRecipe({ date: day.date }, 'lunch')"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="dinner">
+        <th mat-header-cell *matHeaderCellDef>Cena</th>
+        <td mat-cell *matCellDef="let day">
+          <div
+            cdkDropList
+            [cdkDropListData]="day.dinner"
+            [cdkDropListConnectedTo]="dropTargetIds"
+            class="example-list"
+            (cdkDropListDropped)="drop($event)"
+          >
+
+              <mat-chip *ngFor="let recipe of day.dinner" cdkDrag>
+                {{ recipe.name }}
+                <button matChipRemove (click)="removeRecipe(day.date, recipe.name, 'dinner')">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip>
+
+          </div>
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="selectRecipe({ date: day.date }, 'dinner')"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </section>
+</div>

@@ -1,0 +1,16 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$kiweest-theme-primary:mat.define-palette(mat.$red-palette,A700);
+$kiweest-theme-accent:mat.define-palette(mat.$amber-palette,600);
+$kiweest-theme-warn:mat.define-palette(mat.$purple-palette,600);
+
+$kiweest-theme: mat.define-light-theme((
+color: (
+  primary: $kiweest-theme-primary,
+  accent: $kiweest-theme-accent,
+  warn: $kiweest-theme-warn,
+)
+));
+@include mat.all-component-themes($kiweest-theme);
