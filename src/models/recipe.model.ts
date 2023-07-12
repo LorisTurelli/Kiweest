@@ -8,3 +8,7 @@ export interface Recipe{
   ingredients:Ingredient[],
   id?:number|string
 }
+export interface ShortRecipe{
+  name:string,
+  id:number|string
+}

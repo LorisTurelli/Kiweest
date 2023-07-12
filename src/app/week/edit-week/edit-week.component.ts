@@ -1,14 +1,17 @@
-import { Component, HostListener, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Day } from 'src/models/menu.model';
+import { Menu,Day } from 'src/models/menu.model';
 import { Recipe } from 'src/models/recipe.model';
 import { RecipeService } from 'src/sevices/recipe.service';
+import { MenuService } from 'src/sevices/menu.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import {
   CdkDragDrop,
   CdkDragMove,
@@ -17,51 +20,113 @@ import {
 } from '@angular/cdk/drag-drop';
 
 @Component({
+
   selector: 'app-edit-week',
   templateUrl: './edit-week.component.html',
   styleUrls: ['./edit-week.component.scss'],
 })
 export class EditWeekComponent {
-  constructor(public dialog: MatDialog) {
-    this.setDuration();
+  constructor(
+    public dialog: MatDialog,
+    private menuSrv: MenuService,
+    private router: Router,
+    private route: ActivatedRoute
+    ) {
+
   }
+  private routeSub!: Subscription;
   dataSource!: MatTableDataSource<Day>;
   displayedColumns: string[] = ['date', 'lunch', 'dinner'];
-  days: Day[] = [];
+
+  menuId!: string | number;
+  name?:string='';
+  menu: Day[] = [];
+  start?:Date;
+  days?:number;
+
   dropTargetIds: string[] = [];
   weekForm = new FormGroup({
-    start: new FormControl(new Date()),
-    duration: new FormControl(15),
+    start: new FormControl(null),
+    duration: new FormControl(null),
+    name:new FormControl(null)
   });
+  ngOnInit(): void {
+    this.routeSub = this.route.params.subscribe((params) => {
+      if (params['id'] != undefined) {
+        this.menuSrv.getMenu(params['id']).subscribe((res) => {
+          this.menuId = params['id'];
+          this.name = res.name;
+          this.menu = res.menu;
+          this.start = res.start;
+          this.days = res.days;
+          this.weekForm = new FormGroup({
+            start: new FormControl(this.start, [Validators.required]),
+            duration: new FormControl(this.days, [
+              Validators.required,
+              Validators.min(1)
+            ]),
+            name:new FormControl(this.name,[Validators.required])
+          });
+          this.setDuration();
+        });
+      }else{
+        this.name="Menu del "+this.formatDate()
+        this.weekForm = new FormGroup({
+          start: new FormControl(new Date(), [Validators.required]),
+          duration: new FormControl(8, [
+            Validators.required,
+            Validators.min(1)
+          ]),
+            name:new FormControl(this.name,[Validators.required])
+        });
+        this.setDuration();
+      }
+    });
+  }
+  formatDate(inputDate?:Date){
+    let objectDate=inputDate||new Date();
+    let day:string|number = objectDate.getDate();
+    let month:string|number = objectDate.getMonth()+1;
+    let year:string|number = objectDate.getFullYear();
+    if (day < 10) day = '0' + day;
+    if (month < 10) month = `0${month}`;
+    return `${day}/${month}/${year}`
+  }
   setDuration() {
-    let startDate = this.weekForm.controls['start'].value;
-    let duration = this.weekForm.controls['duration'].value;
-    let difference = duration - this.days.length;
+    let startDate:Date = new Date(this.weekForm.controls['start'].value);
+    if(this.weekForm.controls['duration'].value<=0)this.weekForm.controls['duration'].setValue(1)
+    let days = this.weekForm.controls['duration'].value;
+    let difference = days - this.menu.length;
     if (difference >= 0) {
-      for (let i = this.days.length; i < duration; i++) {
+      for (let i = this.menu.length; i < days; i++) {
         let date: Date = new Date(startDate);
         date.setDate(startDate.getDate() + i);
-        this.days.push({ date: date, lunch: [], dinner: [] });
+        this.menu.push({ date: date, lunch: [], dinner: [] });
         this.dropTargetIds.push('cdk-drop-list-' + i * 2);
         this.dropTargetIds.push('cdk-drop-list-' + (i * 2 + 1));
       }
     } else {
-      for (let i = this.days.length; i > duration; i--) {
-        this.days.pop();
+      for (let i = this.menu.length; i > days; i--) {
+        this.menu.pop();
       }
     }
-    this.dataSource = new MatTableDataSource(this.days);
+    this.dataSource = new MatTableDataSource(this.menu);
+    this.days=days
+  }
+  setName(){
+    this.name = this.weekForm.controls['name'].value;
   }
   setDate() {
-    let startDate = this.weekForm.controls['start'].value;
-    for (let i = 0; i < this.days.length; i++) {
+    let startDate:Date = new Date(this.weekForm.controls['start'].value);
+    for (let i = 0; i < this.menu.length; i++) {
       let date: Date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
-      this.days[i].date = date;
+      console.log(new Date(this.weekForm.controls['start'].value).toLocaleDateString())
+      date.setDate(new Date(startDate).getDate() + i);;
+      this.menu[i].date = date;
     }
   }
   removeRecipe(date: Date, name: string, path: string) {
-    let currentDay = this.days[this.days.findIndex((obj) => obj.date === date)];
+    let currentDay = this.menu[this.menu.findIndex((obj) => obj.date === date)];
     if (path == 'lunch') {
       currentDay.lunch?.splice(
         currentDay.lunch?.findIndex((obj) => obj.name === name),
@@ -105,7 +170,7 @@ export class EditWeekComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         let currentDay =
-          this.days[this.days.findIndex((obj) => obj.date === result.day.date)];
+          this.menu[this.menu.findIndex((obj) => obj.date === result.day.date)];
         if (result.meal == 'lunch') {
           if (currentDay.lunch == null) {
             currentDay.lunch = [];
@@ -120,6 +185,19 @@ export class EditWeekComponent {
         }
       }
     });
+  }
+  //funzioni HTTP
+  submit() {
+    let menu: Menu = {
+      name: this.name,
+      days:this.days?this.days:1,
+      start: this.weekForm.controls['start'].value,
+      menu: this.menu,
+    };
+      this.menuId
+        ? this.menuSrv.editMenu(menu, this.menuId).subscribe(()=>{this.router.navigate(['week']);})
+        : this.menuSrv.addMenu(menu).subscribe(()=>{this.router.navigate(['week']);});
+      //this.router.navigate(['week']);
   }
 }
 

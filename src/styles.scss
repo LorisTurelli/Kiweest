@@ -52,3 +52,20 @@ button{
   @extend .title-text;
   font-size: 1.8rem!important;
 }
+body{
+  background-image: url('assets/bg.png');
+  background-repeat: repeat;
+}
+
+.mat-form-field-wrapper{
+  background-color: #FAFAFA;
+  opacity: 0.7;
+  border-radius: 5px;
+  padding-bottom: 0 !important;
+  margin-bottom: 21.5px;
+  .mat-form-field-underline{
+    position: relative;
+    bottom: 0;
+  }
+}
+

@@ -85,20 +85,13 @@ export class EditRecipeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        if (result.unit == 'q.b.') {
-          this.ingredients.push({
-            name: result.name,
-            amount: null,
-            unit: result.unit,
-          });
-        } else {
+
           this.ingredients.push({
             name: result.name,
             amount: result.amount,
             unit: result.unit,
           });
-        }
-        console.log(this.ingredients);
+
       }
     });
   }
@@ -145,7 +138,7 @@ export class DialogIngredientComponent {
   ) {}
   checkUnit(): boolean {
     if (this.data.unit == 'q.b.') {
-      this.data.amount = 0;
+      this.data.amount = 1;
       return true;
     } else {
       return false;

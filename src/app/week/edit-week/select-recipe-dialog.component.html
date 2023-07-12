@@ -18,7 +18,7 @@
       <th mat-header-cell *matHeaderCellDef>Ricetta</th>
       <td mat-cell *matCellDef="let element">
         {{ element.name }}
-        <button mat-icon-button color="primary" [mat-dialog-close]="{recipe:element,day:data.day,meal:data.meal}"><mat-icon>add</mat-icon></button>
+        <button mat-icon-button color="primary" [mat-dialog-close]="{recipe:{name:element.name,id:element.id},day:data.day,meal:data.meal}"><mat-icon>add</mat-icon></button>
       </td>
     </ng-container>
 

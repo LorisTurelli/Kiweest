@@ -1,9 +1,28 @@
+form{
+  margin-top: 15px;
+}
 ul{
   padding-left: 0;
   margin-bottom: 0;
   li{
     list-style: none;
   }
+}
+#startDate{
+  width: 48%;
+  margin-right: 4%;
+}
+#duration{
+  width: 48%;
+  text-align: center;
+}
+#name{
+  width: 100%;
+}
+#save{
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 .mat-column-date{
   width: 16%;
@@ -77,4 +96,15 @@ mat-chip-list{
 
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dateContainer{
+  text-transform: capitalize;
+  font-family: 'Kalam';
+  font-size: 18px;
+    span{
+      font-family: 'Lobster';
+      font-size:25px;
+      font-weight: bold;
+    }
 }

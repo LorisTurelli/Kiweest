@@ -1,5 +1,13 @@
 mat-toolbar > div{
   position: absolute;
-  right:0
+  right:0;
 }
 
+.material-icons {
+  vertical-align:text-bottom !important;
+  font-size: 28px !important;
+}
+
+button{
+  margin-right: 15px;
+}

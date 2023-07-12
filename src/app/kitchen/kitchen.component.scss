@@ -1,18 +1,21 @@
-th{
-  position: relative;
-  button{
-    position: absolute;
-    right: 0px;
-    top: 8px;
-    //border-radius:100px;
-  }
-}
-td{
-  position: relative;
-  div{
-    position: absolute;
-    right: 0;
-    top: 5px;
-    }
+  .material-icons {
+    vertical-align:text-bottom;
+    font-size: 18px !important;
   }
 
+    .mat-column-name{
+    width:40%;
+    text-align: left;
+  }
+    .mat-column-servings{
+    width:30%;
+    text-align: center;
+  }
+
+  .mat-column-commands{
+    width:30%;
+    text-align: right;
+  }
+  .mat-icon-button{
+    margin-right: 5px;
+  }

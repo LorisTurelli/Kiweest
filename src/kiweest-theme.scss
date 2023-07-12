@@ -14,3 +14,7 @@ color: (
 )
 ));
 @include mat.all-component-themes($kiweest-theme);
+.material-icons {
+  vertical-align:text-bottom !important;
+  font-size: 18px !important;
+}

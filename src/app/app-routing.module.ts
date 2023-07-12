@@ -15,7 +15,7 @@ const routes: Routes = [
   {path:"week",component:WeekComponent},
   {path:"week/editWeek",component:EditWeekComponent},
   {path:"week/editWeek/:id",component:EditWeekComponent},
-  {path:"list",component:ListComponent},
+  {path:"list/:id",component:ListComponent},
   {path:"settings",component:SettingsComponent},
 ];
 

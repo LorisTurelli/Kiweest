@@ -1,15 +1,15 @@
-import { Recipe } from "./recipe.model"
+import { Recipe, ShortRecipe } from "./recipe.model"
 
 export interface Menu{
   name?:string,
   start:Date,
   days:number,
-  end:Date,
-  menu:Day[]
+  menu:Day[],
+  id?:number|string
 }
 
 export interface Day{
   date:Date,
-  lunch?:Recipe[],
-  dinner?:Recipe[]
+  lunch?:ShortRecipe[],
+  dinner?:ShortRecipe[]
 }

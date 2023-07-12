@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Recipe } from 'src/models/recipe.model';
 import { map } from 'rxjs/operators';
+import { MenuService } from './menu.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RecipeService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private MenuSrv:MenuService) {}
   loadedRecepies: Recipe[]=[];
   getAllRecepies() {
     return this.http
@@ -38,7 +39,6 @@ export class RecipeService {
       )
   }
   addRecipe(recipe: Recipe) {
-    console.log(recipe);
     this.http
       .post<Recipe>(
         'https://kiweest-default-rtdb.europe-west1.firebasedatabase.app/recipes.json',
@@ -54,8 +54,25 @@ export class RecipeService {
       )
       .subscribe();
   }
-  deleteRecipe(id:number|string){
-    console.log('elimino' + id)
-    this.http.delete('https://kiweest-default-rtdb.europe-west1.firebasedatabase.app/recipes/'+id+'.json').subscribe()
+  deleteRecipe(paramId:number|string){
+    //this.http.delete('https://kiweest-default-rtdb.europe-west1.firebasedatabase.app/recipes/'+paramId+'.json').subscribe()
+    this.MenuSrv.getAllMenus().subscribe(res=>{
+      let menus=res
+      menus.forEach(menu=>{
+        let menuId=menu.id?menu.id:0;
+        (menu.menu).forEach((meal,i)=>{
+          (meal.dinner)?.forEach((recipe,a)=>{
+            if(recipe.id===paramId){
+              this.http.delete('https://kiweest-default-rtdb.europe-west1.firebasedatabase.app/menus/'+menuId+'/menu/'+i+'/dinner/'+a+'.json').subscribe()
+            }
+          });
+          (meal.lunch)?.forEach((recipe,a)=>{
+            if(recipe.id===paramId){
+              this.http.delete('https://kiweest-default-rtdb.europe-west1.firebasedatabase.app/menus/'+menuId+'/menu/'+i+'/lunch/'+a+'.json').subscribe()
+            }
+          });
+        })
+      })
+    })
   }
 }

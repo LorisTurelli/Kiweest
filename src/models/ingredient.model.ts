@@ -1,5 +1,5 @@
 export interface Ingredient{
   name:string,
-  amount:number|null,
+  amount:number,
   unit:string,
 }

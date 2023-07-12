@@ -16,7 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class KitchenComponent implements OnInit {
   constructor(private recipeSrv:RecipeService,public dialog: MatDialog) { }
 
-  displayedColumns: string[] = ['name'];
+  displayedColumns: string[] = ['name','servings','commands'];
   dataSource!:MatTableDataSource<Recipe>;
 
   applyFilter(event: Event) {
@@ -36,7 +36,7 @@ export class KitchenComponent implements OnInit {
 
   //Funzioni Dialog
   deleteRecipe(recipeId?:string|number) {
-    const dialogRef = this.dialog.open(DialogConfermaRimuovi, {
+    const dialogRef = this.dialog.open(DialogConfermaRimuoviRicetta, {
       data: {id:recipeId},
     });
 
@@ -48,15 +48,15 @@ export class KitchenComponent implements OnInit {
 //Componente Dialog
 @Component({
   selector: 'dialog-ingredient',
-  template: `<h3>Sicuro?</h3>
+  template: `<h3>Confermi?</h3>
     <p>Se elimini questa ricetta, non potrai più utilizzarla e verrà rimossa dai tuoi Menù.</p>
-    <button mat-stroked-button (click)="onNoClick()">No, dai. 😋</button>
-    <button mat-stroked-button (click)="deleteRecipe(data.id)">Si, rimuovila! 😤</button>
+    <button mat-stroked-button style="width:49%;margin-right:2%" (click)="onNoClick()">No, dai. 😋</button>
+    <button mat-stroked-button color="primary" style="width:49%" (click)="deleteRecipe(data.id)">Si, rimuovila! 😤</button>
   `
 })
-export class DialogConfermaRimuovi {
+export class DialogConfermaRimuoviRicetta {
   constructor(
-    public dialogRef: MatDialogRef<DialogConfermaRimuovi>,
+    public dialogRef: MatDialogRef<DialogConfermaRimuoviRicetta>,
     @Inject(MAT_DIALOG_DATA) public data: {id:string|number},
     private recipeSrv:RecipeService
   ) {}
